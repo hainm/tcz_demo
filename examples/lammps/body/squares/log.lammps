@@ -1,0 +1,114 @@
+LAMMPS (22 Aug 2018)
+  using 1 OpenMP thread(s) per MPI task
+units lj
+dimension 2
+atom_style body rounded/polygon 1 6
+atom_modify map array
+read_data data.squares
+  orthogonal box = (0 0 -0.5) to (12 12 0.5)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  2 atoms
+  2 bodies
+variable r index 4
+variable steps index 10000
+variable T index 0.5
+variable P index 0.1
+variable seed index 980411
+replicate $r $r 1
+replicate 4 $r 1
+replicate 4 4 1
+  orthogonal box = (0 0 -0.5) to (48 48 0.5)
+  1 by 1 by 1 MPI processor grid
+  32 atoms
+  Time spent = 0.000102043 secs
+velocity all create $T ${seed} dist gaussian mom yes rot yes
+velocity all create 0.5 ${seed} dist gaussian mom yes rot yes
+velocity all create 0.5 980411 dist gaussian mom yes rot yes
+variable cut_inner equal 0.5
+variable k_n equal 100
+variable k_na equal 2
+variable c_n equal 1
+variable c_t equal 1
+variable mu equal 0.1
+variable delta_ua equal 0.5
+pair_style body/rounded/polygon ${c_n} ${c_t} ${mu} ${delta_ua} ${cut_inner}
+pair_style body/rounded/polygon 1 ${c_t} ${mu} ${delta_ua} ${cut_inner}
+pair_style body/rounded/polygon 1 1 ${mu} ${delta_ua} ${cut_inner}
+pair_style body/rounded/polygon 1 1 0.1 ${delta_ua} ${cut_inner}
+pair_style body/rounded/polygon 1 1 0.1 0.5 ${cut_inner}
+pair_style body/rounded/polygon 1 1 0.1 0.5 0.5
+pair_coeff * * ${k_n} ${k_na}
+pair_coeff * * 100 ${k_na}
+pair_coeff * * 100 2
+comm_modify vel yes
+neighbor 0.5 bin
+neigh_modify every 1 delay 0 check yes
+fix 1 all npt/body temp $T $T 1.0 x 0.001 $P 1.0 y 0.001 $P 1.0 couple xy fixedpoint 0 0 0
+fix 1 all npt/body temp 0.5 $T 1.0 x 0.001 $P 1.0 y 0.001 $P 1.0 couple xy fixedpoint 0 0 0
+fix 1 all npt/body temp 0.5 0.5 1.0 x 0.001 $P 1.0 y 0.001 $P 1.0 couple xy fixedpoint 0 0 0
+fix 1 all npt/body temp 0.5 0.5 1.0 x 0.001 0.1 1.0 y 0.001 $P 1.0 couple xy fixedpoint 0 0 0
+fix 1 all npt/body temp 0.5 0.5 1.0 x 0.001 0.1 1.0 y 0.001 0.1 1.0 couple xy fixedpoint 0 0 0
+fix 2 all enforce2d
+compute 1 all body/local id 1 2 3
+dump 1 all local 1000 dump.polygon.* index c_1[1] c_1[2] c_1[3] c_1[4]
+dump 2 all movie 1000 mov.mp4 type type zoom 1.0 adiam 1.5 body type 0 0
+dump_modify 2 pad 6
+thermo 1000
+thermo_style custom step ke pe etotal press
+timestep 0.001
+run ${steps}
+run 10000
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 6.15685
+  ghost atom cutoff = 6.15685
+  binsize = 3.07843, bins = 16 16 1
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair body/rounded/polygon, perpetual
+      attributes: half, newton on
+      pair build: half/bin/atomonly/newton
+      stencil: half/bin/2d/newton
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 6.342 | 6.342 | 6.342 Mbytes
+Step KinEng PotEng TotEng Press 
+       0     0.484375         0.25     0.734375 0.0067274306 
+    1000   0.47546844 0.0017172058   0.47718564 0.0035093065 
+    2000   0.63963318   0.20530714   0.84494032  0.023913933 
+    3000   0.81423506  0.091172659   0.90540772 -0.0028257245 
+    4000   0.53335792   0.33006426   0.86342217  0.051892483 
+    5000   0.40227947   0.20048085   0.60276033  0.025640484 
+    6000   0.40335677   0.34963847   0.75299525  0.053628254 
+    7000   0.34053715   0.27508911   0.61562627  0.055873666 
+    8000    0.4558856   0.16797197   0.62385757    0.2094566 
+    9000   0.51577457   0.39673748   0.91251205  0.023654379 
+   10000   0.41158045   0.45113136   0.86271181  0.040129544 
+Loop time of 0.314488 on 1 procs for 10000 steps with 32 atoms
+
+Performance: 2747323.208 tau/day, 31797.722 timesteps/s
+85.4% CPU use with 1 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.15438    | 0.15438    | 0.15438    |   0.0 | 49.09
+Neigh   | 0.00073195 | 0.00073195 | 0.00073195 |   0.0 |  0.23
+Comm    | 0.0071409  | 0.0071409  | 0.0071409  |   0.0 |  2.27
+Output  | 0.072672   | 0.072672   | 0.072672   |   0.0 | 23.11
+Modify  | 0.074806   | 0.074806   | 0.074806   |   0.0 | 23.79
+Other   |            | 0.004761   |            |       |  1.51
+
+Nlocal:    32 ave 32 max 32 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:    33 ave 33 max 33 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    57 ave 57 max 57 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 57
+Ave neighs/atom = 1.78125
+Neighbor list builds = 333
+Dangerous builds = 0
+undump 2
+Total wall time: 0:03:18

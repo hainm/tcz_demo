@@ -1,0 +1,99 @@
+LAMMPS (22 Aug 2018)
+  using 1 OpenMP thread(s) per MPI task
+dimension 2
+atom_style sphere
+boundary f fm p
+newton off
+comm_modify vel yes
+region reg block 0 100 0 50 -0.5 0.5 units box
+create_box 1 reg
+Created orthogonal box = (0 0 -0.5) to (100 50 0.5)
+  1 by 1 by 1 MPI processor grid
+neighbor 0.2 bin
+neigh_modify delay 0
+pair_style gran/hertz/history 4000.0 NULL 100.0 NULL 0.5 0
+pair_coeff * *
+fix 1 all nve/sphere
+fix 2 all gravity 1.0 spherical 0.0 -180.0
+fix xwalls all wall/gran hertz/history 4000.0 NULL 100.0 NULL 0 1 xplane 0 100
+fix ywalls all wall/gran hertz/history 4000.0 NULL 100.0 NULL 0 1 yplane 0 NULL
+region slab block 1.0 99.0 30 34.5 -0.5 0.5 units box
+fix ins all pour 1000 1 4767548 vol 0.4 10 diam range 0.5 1.0 region slab
+Particle insertion: 224 every 600 steps, 1000 by step 2401
+fix 3 all enforce2d
+compute 1 all erotate/sphere
+dump id all atom 250 dump.pour
+dump 3 all movie 500 mov.mp4 type type zoom 1.6 adiam 1.5
+dump_modify 3 pad 5
+thermo_style custom step atoms ke c_1 vol
+thermo 1000
+thermo_modify lost ignore norm no
+compute_modify thermo_temp dynamic/dof yes
+timestep 0.001
+run 25000
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 1.2
+  ghost atom cutoff = 1.2
+  binsize = 0.6, bins = 167 84 2
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair gran/hertz/history, perpetual
+      attributes: half, newton off, size, history
+      pair build: half/size/bin/newtoff
+      stencil: half/bin/2d/newtoff
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 5.804 | 5.804 | 5.804 Mbytes
+Step Atoms KinEng c_1 Volume 
+       0        0           -0            0         5000 
+    1000      285     244.9894            0         5000 
+    2000      522    608.09082            0         5000 
+    3000      682    1139.4513            0         5000 
+    4000      892    1941.6496            0         5000 
+    5000     1000    2996.5071            0         5000 
+    6000     1000    3773.2256    40.004519         5000 
+    7000     1000    3852.6504    105.83285         5000 
+    8000     1000    3088.3473    113.07675         5000 
+    9000     1000    2204.6383    94.504095         5000 
+   10000     1000    1059.2483    86.018036         5000 
+   11000     1000    356.29542    46.566228         5000 
+   12000     1000    72.449134     32.37494         5000 
+   13000     1000    33.116135    15.896915         5000 
+   14000     1000    23.261666    11.441728         5000 
+   15000     1000    19.368534    7.7337229         5000 
+   16000     1000    18.079881    6.0993119         5000 
+   17000     1000    17.288413     5.081687         5000 
+   18000     1000    17.625496    4.7442938         5000 
+   19000     1000    11.629722    2.9781924         5000 
+   20000     1000    6.8198275    2.2926705         5000 
+   21000     1000    3.7664034    1.9454152         5000 
+   22000     1000    2.7399852    1.0429696         5000 
+   23000     1000    1.3537177   0.42058169         5000 
+   24000     1000   0.94878948   0.36283147         5000 
+   25000     1000   0.62223032   0.23287514         5000 
+Loop time of 2.66668 on 1 procs for 25000 steps with 1000 atoms
+
+Performance: 809994.762 tau/day, 9374.939 timesteps/s
+95.1% CPU use with 1 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 1.2054     | 1.2054     | 1.2054     |   0.0 | 45.20
+Neigh   | 0.25859    | 0.25859    | 0.25859    |   0.0 |  9.70
+Comm    | 0.0065427  | 0.0065427  | 0.0065427  |   0.0 |  0.25
+Output  | 0.32538    | 0.32538    | 0.32538    |   0.0 | 12.20
+Modify  | 0.80069    | 0.80069    | 0.80069    |   0.0 | 30.03
+Other   |            | 0.07012    |            |       |  2.63
+
+Nlocal:    1000 ave 1000 max 1000 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:    0 ave 0 max 0 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    2440 ave 2440 max 2440 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 2440
+Ave neighs/atom = 2.44
+Neighbor list builds = 1697
+Dangerous builds = 0

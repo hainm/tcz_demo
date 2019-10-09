@@ -1,0 +1,119 @@
+LAMMPS (22 Aug 2018)
+  using 1 OpenMP thread(s) per MPI task
+dimension 2
+atom_style sphere
+atom_modify map array
+boundary f fm p
+newton off
+comm_modify vel yes cutoff 2.5
+fix prop all property/atom mol ghost yes
+region reg block 0 100 0 50 -0.5 0.5 units box
+create_box 1 reg
+Created orthogonal box = (0 0 -0.5) to (100 50 0.5)
+  1 by 1 by 1 MPI processor grid
+neighbor 0.2 bin
+neigh_modify delay 0
+pair_style gran/hertz/history 4000.0 NULL 100.0 NULL 0.5 0
+pair_coeff * *
+fix 2 all gravity 1.0 spherical 0.0 -180.0
+fix xwalls all wall/gran hertz/history 4000.0 NULL 100.0 NULL 0 1 xplane 0 100
+fix ywalls all wall/gran hertz/history 4000.0 NULL 100.0 NULL 0 1 yplane 0 NULL
+molecule object molecule.vshape
+Read molecule object:
+  5 atoms with max type 1
+  0 bonds with max type 0
+  0 angles with max type 0
+  0 dihedrals with max type 0
+  0 impropers with max type 0
+fix 3 all rigid/small molecule mol object
+0 rigid bodies with 0 atoms
+  2.23607 = max distance from body owner to body atom
+region slab block 3.0 97.0 30 34.5 -0.5 0.5 units box
+fix ins all pour 500 0 4767548 vol 0.8 10 region slab mol object rigid 3
+Particle insertion: 26 every 600 steps, 500 by step 11401
+fix 4 all enforce2d
+compute 1 all erotate/sphere
+compute Tsphere all temp/sphere
+dump id all atom 100 tmp.dump
+variable colors string "red green blue yellow white purple pink orange lime gray"
+variable mol2 atom mol%10
+dump 2 all image 250 image.*.jpg v_mol2 type zoom 1.6 adiam 1.5
+dump_modify 2 pad 5 amap 0 10 sa 1 10 ${colors}
+dump_modify 2 pad 5 amap 0 10 sa 1 10 red green blue yellow white purple pink orange lime gray
+variable colors string "red green blue yellow white purple pink orange lime gray"
+variable mol3 atom mol%10
+dump 3 all movie 250 mov.mp4 v_mol3 type zoom 1.6 adiam 1.5
+dump_modify 3 pad 5 amap 0 10 sa 1 10 ${colors}
+dump_modify 3 pad 5 amap 0 10 sa 1 10 red green blue yellow white purple pink orange lime gray
+thermo_style custom step atoms ke c_1 vol
+thermo_modify lost ignore norm no temp Tsphere
+compute_modify Tsphere dynamic/dof yes
+thermo 1000
+timestep 0.001
+run 25000
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 1.2
+  ghost atom cutoff = 2.5
+  binsize = 0.6, bins = 167 84 2
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair gran/hertz/history, perpetual
+      attributes: half, newton off, size, history
+      pair build: half/size/bin/newtoff
+      stencil: half/bin/2d/newtoff
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 5.81 | 5.81 | 5.81 Mbytes
+Step Atoms KinEng c_1 Volume 
+       0        0           -0            0         5000 
+    1000      195    324.61298 3.1703724e-30         5000 
+    2000      305    721.26954 0.0010191595         5000 
+    3000      340    1270.6317 0.0010770058         5000 
+    4000      500    2167.0141  0.014807438         5000 
+    5000      565    3336.8676  0.023597637         5000 
+    6000      620    3959.6812    2.3583209         5000 
+    7000      765     3920.036    4.2140442         5000 
+    8000      870     3988.508    4.3694204         5000 
+    9000      940    3599.4083    4.6371738         5000 
+   10000     1015    3444.5321    7.8774809         5000 
+   11000     1175    3020.8181    3.9694468         5000 
+   12000     1220    2876.6005    5.9004906         5000 
+   13000     1315      2646.21    4.8610714         5000 
+   14000     1440    2609.3682    4.9790033         5000 
+   15000     1500    2281.8867    5.0489978         5000 
+   16000     1550    2080.2165    2.4996986         5000 
+   17000     1685    1696.4974      4.13177         5000 
+   18000     1760    1489.5299    2.9732049         5000 
+   19000     1850    1531.5538    2.6370692         5000 
+   20000     1970    1384.1997    3.8994745         5000 
+   21000     2015     1156.487    4.1102939         5000 
+   22000     2155    1014.2164    3.2781513         5000 
+   23000     2250    842.62756     4.424857         5000 
+   24000     2365    680.06995    3.2322567         5000 
+   25000     2445    479.25074    2.7008018         5000 
+Loop time of 5.99421 on 1 procs for 25000 steps with 2445 atoms
+
+Performance: 360347.678 tau/day, 4170.691 timesteps/s
+92.4% CPU use with 1 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 1.3936     | 1.3936     | 1.3936     |   0.0 | 23.25
+Neigh   | 0.27439    | 0.27439    | 0.27439    |   0.0 |  4.58
+Comm    | 0.014076   | 0.014076   | 0.014076   |   0.0 |  0.23
+Output  | 1.5112     | 1.5112     | 1.5112     |   0.0 | 25.21
+Modify  | 2.703      | 2.703      | 2.703      |   0.0 | 45.09
+Other   |            | 0.09798    |            |       |  1.63
+
+Nlocal:    2445 ave 2445 max 2445 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:    0 ave 0 max 0 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    4017 ave 4017 max 4017 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 4017
+Ave neighs/atom = 1.64294
+Neighbor list builds = 1599
+Dangerous builds = 0
