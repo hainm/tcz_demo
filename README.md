@@ -41,9 +41,9 @@ Examples
 * [LAMMPS: Neb/in.neb.hop1][lmp-n2-h]
 * [LAMMPS: Peptide/in.peptide][lmp-p1-h]  
 
-[lmp-a3-h]: https://htmlpreview.github.io/?https://github.com/luxalatium/tacchemzoo/blob/master/examples/lammps/accelerate/phosphate/lammps_accelerate_phosphate.html "accelerate-phosphate-h"
-[lmp-n2-h]: https://htmlpreview.github.io/?https://github.com/luxalatium/tacchemzoo/blob/master/examples/lammps/neb/hop1/lammps_neb_hop1.html "neb-hop1-h"
-[lmp-p1-h]: https://htmlpreview.github.io/?https://github.com/luxalatium/tacchemzoo/blob/master/examples/lammps/peptide/lammps_peptide.html "peptide-peptide-h"
+[lmp-a3-h]: https://htmlpreview.github.io/?https://github.com/luxalatium/tcz_demo/blob/master/examples/lammps/accelerate/phosphate/lammps_accelerate_phosphate.html "accelerate-phosphate-h"
+[lmp-n2-h]: https://htmlpreview.github.io/?https://github.com/luxalatium/tcz_demo/blob/master/examples/lammps/neb/hop1/lammps_neb_hop1.html "neb-hop1-h"
+[lmp-p1-h]: https://htmlpreview.github.io/?https://github.com/luxalatium/tcz_demo/blob/master/examples/lammps/peptide/lammps_peptide.html "peptide-peptide-h"
 
 More [Examples](./docs/Examples.md)
 
